@@ -1,0 +1,35 @@
+---
+
+- hosts: all
+  become: true
+  tasks:  
+
+  - name: install updates (CentOS)
+    yum: 
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+- hosts: web_server
+  become: true
+  tasks:  
+
+
+  - name: install apache and php for CentOS server
+    package: 
+      name: 
+        - httpd
+        - php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+
+  - name: copy default html file for site
+    tags: apache,httpd
+    copy: 
+      src: Files/default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644  
+
